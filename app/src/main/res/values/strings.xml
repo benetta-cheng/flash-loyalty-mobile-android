@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Loyalty App</string>
+    <string name="news">News</string>
+    <string name="pre_order">Pre-Order</string>
+    <string name="branch">Branches</string>
+    <string name="points">Points</string>
+    <string name="profile">Profile</string>
+    <string name="logout">Log out</string>
 </resources>

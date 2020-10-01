@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_news">
+    <fragment
+        android:id="@id/nav_news"
+        android:name="com.ibm2105.loyaltyapp.NewsFragment"
+        android:label="@string/news"
+        tools:layout="@layout/fragment_news" />
+    <fragment
+        android:id="@id/nav_pre_order"
+        android:name="com.ibm2105.loyaltyapp.PreOrderFragment"
+        android:label="@string/pre_order"
+        tools:layout="@layout/fragment_pre_order" >
+        <action
+            android:id="@+id/action_preOrderFragment_to_preOrderConfirmationFragment"
+            app:destination="@id/nav_pre_order_confirmation" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_pre_order_confirmation"
+        android:name="com.ibm2105.loyaltyapp.PreOrderConfirmationFragment"
+        android:label="@string/pre_order"
+        tools:layout="@layout/fragment_pre_order_confirmation" />
+    <fragment
+        android:id="@id/nav_branch"
+        android:name="com.ibm2105.loyaltyapp.BranchesFragment"
+        android:label="@string/branch"
+        tools:layout="@layout/fragment_branches" />
+    <fragment
+        android:id="@id/nav_points"
+        android:name="com.ibm2105.loyaltyapp.PointsFragment"
+        android:label="@string/points"
+        tools:layout="@layout/fragment_points" />
+    <fragment
+        android:id="@id/nav_profile"
+        android:name="com.ibm2105.loyaltyapp.ProfileFragment"
+        android:label="@string/profile"
+        tools:layout="@layout/fragment_profile" />
+</navigation>
