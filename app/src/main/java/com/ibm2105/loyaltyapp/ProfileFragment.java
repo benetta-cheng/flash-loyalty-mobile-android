@@ -2,11 +2,30 @@ package com.ibm2105.loyaltyapp;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Toast;
+
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.DateValidatorPointBackward;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,15 +33,6 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class ProfileFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -32,33 +42,57 @@ public class ProfileFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment ProfileFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(String param1, String param2) {
+    public static ProfileFragment newInstance() {
         ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        String[] STATES = new String[]{"Kuala Lumpur", "Putrajaya", "Labuan", "Perlis", "Kedah", "Terengganu", "Pahang", "Perak", "Kelantan", "Penang", "Selangor", "Negeri Sembilan", "Johor", "Malacca", "Sabah", "Sarawak"};
+
+        ArrayAdapter<String> stateAdapter = new ArrayAdapter<>(getContext(), R.layout.dropdown_menu_item, STATES);
+        AutoCompleteTextView stateInput = view.findViewById(R.id.autoCompleteTextInputState);
+        stateInput.setAdapter(stateAdapter);
+
+        TextInputEditText textInputEditTextDOB = view.findViewById(R.id.textInputEditTextDOB);
+        textInputEditTextDOB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MaterialDatePicker.Builder<Long> materialDatePickerBuilder = MaterialDatePicker.Builder.datePicker();
+                materialDatePickerBuilder.setSelection(MaterialDatePicker.todayInUtcMilliseconds());
+                materialDatePickerBuilder.setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR);
+
+                CalendarConstraints.Builder calendarConstraints = new CalendarConstraints.Builder();
+                calendarConstraints.setEnd(MaterialDatePicker.todayInUtcMilliseconds());
+                calendarConstraints.setOpenAt(MaterialDatePicker.todayInUtcMilliseconds());
+                calendarConstraints.setValidator(DateValidatorPointBackward.now());
+
+                materialDatePickerBuilder.setCalendarConstraints(calendarConstraints.build());
+                MaterialDatePicker<Long> materialDatePicker = materialDatePickerBuilder.build();
+                materialDatePicker.addOnPositiveButtonClickListener(selection -> {
+                    Date date = new Date(selection);
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    textInputEditTextDOB.setText(dateFormat.format(date));
+                });
+
+                materialDatePicker.show(getChildFragmentManager(), materialDatePicker.toString());
+
+            }
+        });
+    }
+
 }

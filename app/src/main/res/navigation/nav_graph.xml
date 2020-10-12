@@ -8,7 +8,11 @@
         android:id="@id/nav_news"
         android:name="com.ibm2105.loyaltyapp.NewsFragment"
         android:label="@string/news"
-        tools:layout="@layout/fragment_news" />
+        tools:layout="@layout/fragment_news" >
+        <action
+            android:id="@+id/action_nav_news_to_preLoginActivity"
+            app:destination="@id/preLoginActivity" />
+    </fragment>
     <fragment
         android:id="@id/nav_pre_order"
         android:name="com.ibm2105.loyaltyapp.PreOrderFragment"
@@ -17,6 +21,9 @@
         <action
             android:id="@+id/action_preOrderFragment_to_preOrderConfirmationFragment"
             app:destination="@id/nav_pre_order_confirmation" />
+        <action
+            android:id="@+id/action_nav_pre_order_to_preLoginActivity"
+            app:destination="@id/preLoginActivity" />
     </fragment>
     <fragment
         android:id="@+id/nav_pre_order_confirmation"
@@ -27,15 +34,32 @@
         android:id="@id/nav_branch"
         android:name="com.ibm2105.loyaltyapp.BranchesFragment"
         android:label="@string/branch"
-        tools:layout="@layout/fragment_branches" />
+        tools:layout="@layout/fragment_branches" >
+        <action
+            android:id="@+id/action_nav_branch_to_preLoginActivity"
+            app:destination="@id/preLoginActivity" />
+    </fragment>
     <fragment
         android:id="@id/nav_points"
         android:name="com.ibm2105.loyaltyapp.PointsFragment"
         android:label="@string/points"
-        tools:layout="@layout/fragment_points" />
+        tools:layout="@layout/fragment_points" >
+        <action
+            android:id="@+id/action_nav_points_to_preLoginActivity"
+            app:destination="@id/preLoginActivity" />
+    </fragment>
     <fragment
         android:id="@id/nav_profile"
         android:name="com.ibm2105.loyaltyapp.ProfileFragment"
         android:label="@string/profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_nav_profile_to_preLoginActivity"
+            app:destination="@id/preLoginActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/preLoginActivity"
+        android:name="com.ibm2105.loyaltyapp.prelogin.PreLoginActivity"
+        android:label="activity_pre_login"
+        tools:layout="@layout/activity_pre_login" />
 </navigation>

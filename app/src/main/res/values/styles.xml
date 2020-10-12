@@ -4,6 +4,8 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/aqua_500</item>
         <item name="colorPrimaryVariant">@color/aqua_700</item>
+        <!-- colorPrimaryDark is used for the status bar colour so it needs to be here -->
+        <item name="colorPrimaryDark">@color/aqua_700</item>
         <item name="colorSecondary">@color/aqua_500</item>
         <item name="colorSecondaryVariant">@color/aqua_700</item>
     </style>
