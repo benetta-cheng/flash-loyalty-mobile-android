@@ -2,63 +2,97 @@ package com.ibm2105.loyaltyapp;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link PreOrderConfirmationFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.DateValidatorPointBackward;
+import com.google.android.material.datepicker.DateValidatorPointForward;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.textfield.TextInputEditText;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class PreOrderConfirmationFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public PreOrderConfirmationFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment PreOrderConfirmationFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static PreOrderConfirmationFragment newInstance(String param1, String param2) {
+    public static PreOrderConfirmationFragment newInstance() {
         PreOrderConfirmationFragment fragment = new PreOrderConfirmationFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        String[] BRANCHES = new String[]{"Branch1", "Branch2", "Branch3"};
+
+        ArrayAdapter<String> stateAdapter = new ArrayAdapter<>(getContext(), R.layout.dropdown_menu_item, BRANCHES);
+        AutoCompleteTextView stateInput = view.findViewById(R.id.autoCompleteTextInputBranch);
+        stateInput.setAdapter(stateAdapter);
+
+        TextInputEditText textInputEditTextPreOrderDate = view.findViewById(R.id.textInputEditTextPreOrderDate);
+        textInputEditTextPreOrderDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MaterialDatePicker.Builder<Long> materialDatePickerBuilder = MaterialDatePicker.Builder.datePicker();
+                materialDatePickerBuilder.setSelection(MaterialDatePicker.todayInUtcMilliseconds());
+                materialDatePickerBuilder.setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR);
+
+                CalendarConstraints.Builder calendarConstraints = new CalendarConstraints.Builder();
+                calendarConstraints.setOpenAt(MaterialDatePicker.todayInUtcMilliseconds());
+                calendarConstraints.setValidator(DateValidatorPointForward.now());
+
+                materialDatePickerBuilder.setCalendarConstraints(calendarConstraints.build());
+                MaterialDatePicker<Long> materialDatePicker = materialDatePickerBuilder.build();
+                materialDatePicker.addOnPositiveButtonClickListener(selection -> {
+                    Date date = new Date(selection);
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    textInputEditTextPreOrderDate.setText(dateFormat.format(date));
+                });
+
+                materialDatePicker.show(getChildFragmentManager(), materialDatePicker.toString());
+
+            }
+        });
+
+        PreOrderListData[] preOrderListDataArray = new PreOrderListData[]{
+                new PreOrderListData(R.drawable.ic_launcher_background, 0, 10, "ABC"),
+                new PreOrderListData(R.drawable.ic_launcher_background, 1, 8, "ABE"),
+                new PreOrderListData(R.drawable.ic_launcher_background, 2, 76, "JSF"),
+                new PreOrderListData(R.drawable.ic_launcher_background, 3, 12, "ASF")
+        };
+
+        RecyclerView preOrderRecycler = view.findViewById(R.id.preOrderRecycler);
+        PreOrderConfirmationListAdapter preOrderConfirmationListAdapter = new PreOrderConfirmationListAdapter(preOrderListDataArray);
+        preOrderRecycler.setHasFixedSize(true);
+        preOrderRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
+        preOrderRecycler.setAdapter(preOrderConfirmationListAdapter);
+
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_pre_order_confirmation, container, false);
     }
+
 }
