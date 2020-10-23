@@ -1,5 +1,6 @@
 package com.ibm2105.loyaltyapp.database;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -16,5 +17,8 @@ public interface AccountDao {
     public void updateAccount(Account account);
 
     @Query("SELECT * FROM accounts WHERE username = :username")
-    Account findAccountWithUsername(String username);
+    LiveData<Account> findAccountWithUsername(String username);
+
+    @Query("SELECT * FROM accounts WHERE id = :id")
+    LiveData<Account> findAccountWithId(String id);
 }
