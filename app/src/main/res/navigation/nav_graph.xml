@@ -6,12 +6,15 @@
     app:startDestination="@id/nav_news">
     <fragment
         android:id="@id/nav_news"
-        android:name="com.ibm2105.loyaltyapp.NewsFragment"
+        android:name="com.ibm2105.loyaltyapp.news.NewsFragment"
         android:label="@string/news"
         tools:layout="@layout/fragment_news" >
         <action
             android:id="@+id/action_nav_news_to_preLoginActivity"
             app:destination="@id/preLoginActivity" />
+        <action
+            android:id="@+id/action_nav_news_to_fullNewsFragment"
+            app:destination="@id/fullNewsFragment" />
     </fragment>
     <fragment
         android:id="@id/nav_pre_order"
@@ -62,4 +65,9 @@
         android:name="com.ibm2105.loyaltyapp.prelogin.PreLoginActivity"
         android:label="activity_pre_login"
         tools:layout="@layout/activity_pre_login" />
+    <fragment
+        android:id="@+id/fullNewsFragment"
+        android:name="com.ibm2105.loyaltyapp.news.FullNewsFragment"
+        android:label="@string/news"
+        tools:layout="@layout/fragment_full_news" />
 </navigation>

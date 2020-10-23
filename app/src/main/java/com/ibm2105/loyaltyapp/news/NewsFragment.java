@@ -1,12 +1,19 @@
-package com.ibm2105.loyaltyapp;
+package com.ibm2105.loyaltyapp.news;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.ibm2105.loyaltyapp.R;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -53,6 +60,25 @@ public class NewsFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        NewsListData[] newsListData = new NewsListData[] {
+                new NewsListData("Celebrate your birthday with us!", R.drawable.img_brownies, "Come claim a free cuboid brownie"),
+                new NewsListData("Sales for household products!", R.drawable.img_household_items, "Up to 70% discounts for most household goods"),
+                new NewsListData("Stock up on party snacks!", R.drawable.img_pizza, "Hand-tossed pizza"),
+        };
+
+        RecyclerView recyclerViewNews = (RecyclerView) view.findViewById(R.id.recyclerviewnews);
+        NewsListAdapter adapter = new NewsListAdapter(newsListData);
+        recyclerViewNews.setHasFixedSize(true);
+        recyclerViewNews.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        recyclerViewNews.setAdapter(adapter);
+        recyclerViewNews.addItemDecoration(new DividerItemDecoration(getContext(),
+                DividerItemDecoration.VERTICAL));
     }
 
     @Override

@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.google.android.material.navigation.NavigationView;
+import com.ibm2105.loyaltyapp.notifications.NotificationsDialogFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
-
     }
 
     @Override
@@ -64,9 +64,15 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.toolbar_action_notification) {
             // Add code to display notification dialog
+            openDialog();
             return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void openDialog() {
+        NotificationsDialogFragment notificationsDialogFragment = new NotificationsDialogFragment();
+        notificationsDialogFragment.show(getSupportFragmentManager(), "Example");
     }
 }
