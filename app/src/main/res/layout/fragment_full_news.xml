@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".news.FullNewsFragment" >
+
+        <TextView
+            android:id="@+id/textViewNewsTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:layout_alignParentTop="@id/imageViewNewsPicture"
+            android:gravity="center_vertical"
+            android:textSize="21sp"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            tools:text="News Title" />
+
+        <ImageView
+            android:id="@+id/imageViewNewsPicture"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textViewNewsTitle"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:adjustViewBounds="true"
+            android:contentDescription="Image"
+            tools:src="@tools:sample/avatars"/>
+
+        <TextView
+            android:id="@+id/textViewNewsDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imageViewNewsPicture"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:gravity="center_vertical"
+            android:textSize="18sp"
+            android:textColor="#000000"
+            tools:text="This is a very \n very \n very \n long description" />
+    </RelativeLayout>
+</ScrollView>

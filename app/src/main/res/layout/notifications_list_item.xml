@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/textViewNotificationsTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="@id/textViewNotificationsTitle"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        android:textSize="21sp"
+        android:textColor="#000000"
+        tools:text="Notifications Title" />
+
+    <TextView
+        android:id="@+id/textViewNotificationsTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_toEndOf="@id/textViewNotificationsTitle"
+        android:layout_marginTop="15dp"
+        android:layout_alignParentEnd="true"
+        android:textAlignment="textEnd"
+        android:gravity="end"
+        android:textSize="16sp"
+        tools:text="Notifications Time" />
+
+    <TextView
+        android:id="@+id/textViewNotificationsDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewNotificationsTitle"
+        android:layout_marginBottom="10dp"
+        android:gravity="center_vertical"
+        android:textSize="18sp"
+        tools:text="Notifications Description" />
+
+</RelativeLayout>
