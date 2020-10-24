@@ -18,13 +18,15 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyA2qGhkmlGdIobofJ6qEzXxy5Bpb6i15nU"/>
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".prelogin.PreLoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>
