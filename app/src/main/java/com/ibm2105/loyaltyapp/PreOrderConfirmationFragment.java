@@ -75,10 +75,10 @@ public class PreOrderConfirmationFragment extends Fragment {
         });
 
         PreOrderListData[] preOrderListDataArray = new PreOrderListData[]{
-                new PreOrderListData(R.drawable.ic_launcher_background, 0, 10, "ABC"),
-                new PreOrderListData(R.drawable.ic_launcher_background, 1, 8, "ABE"),
-                new PreOrderListData(R.drawable.ic_launcher_background, 2, 76, "JSF"),
-                new PreOrderListData(R.drawable.ic_launcher_background, 3, 12, "ASF")
+                new PreOrderListData(R.color.aqua_700, 0, 10, "ABC"),
+                new PreOrderListData(R.color.aqua_700, 1, 8, "ABE"),
+                new PreOrderListData(R.color.aqua_700, 2, 76, "JSF"),
+                new PreOrderListData(R.color.aqua_700, 3, 12, "ASF")
         };
 
         RecyclerView preOrderRecycler = view.findViewById(R.id.preOrderRecycler);
