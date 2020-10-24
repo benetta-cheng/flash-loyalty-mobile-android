@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.google.android.material.navigation.NavigationView;
+import com.ibm2105.loyaltyapp.database.LoyaltyDatabase;
 import com.ibm2105.loyaltyapp.notifications.NotificationsDialogFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Force open the database to allow pre-populating of data
+        LoyaltyDatabase.getDatabase(this).getOpenHelper().getWritableDatabase();
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         navController = navHostFragment.getNavController();

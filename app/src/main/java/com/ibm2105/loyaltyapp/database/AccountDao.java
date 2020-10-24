@@ -20,5 +20,5 @@ public interface AccountDao {
     LiveData<Account> findAccountWithUsername(String username);
 
     @Query("SELECT * FROM accounts WHERE id = :id")
-    LiveData<Account> findAccountWithId(String id);
+    LiveData<Account> findAccountWithId(int id);
 }

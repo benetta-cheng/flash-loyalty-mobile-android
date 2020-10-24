@@ -30,7 +30,7 @@ public abstract class LoyaltyDatabase extends RoomDatabase {
         if (INSTANCE == null) {
             synchronized (LoyaltyDatabase.class) {
                 if (INSTANCE == null) {
-                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(), LoyaltyDatabase.class, "flash_loyalty_database").build();
+                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(), LoyaltyDatabase.class, "flash_loyalty_database").createFromAsset("flash_loyalty_database.db").build();
                 }
             }
         }
