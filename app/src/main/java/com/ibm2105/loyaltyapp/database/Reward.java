@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "rewards")
 public class Reward {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @NonNull
     @ColumnInfo(name = "reward_id")
     private int rewardId;
@@ -19,8 +19,7 @@ public class Reward {
     private int points;
     private String image;
 
-    public Reward(@NonNull int rewardId, String rewardName, int points, String image) {
-        this.rewardId = rewardId;
+    public Reward(String rewardName, int points, String image) {
         this.rewardName = rewardName;
         this.points = points;
         this.image = image;

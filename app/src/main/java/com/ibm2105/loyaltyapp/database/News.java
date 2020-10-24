@@ -10,7 +10,7 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "news")
 public class News {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @NonNull
     @ColumnInfo(name = "news_id")
     private int newsId;
@@ -20,8 +20,7 @@ public class News {
     private String body;
     private String image;
 
-    public News(@NonNull int newsId, String title, String description, String body, String image) {
-        this.newsId = newsId;
+    public News(String title, String description, String body, String image) {
         this.title = title;
         this.description = description;
         this.body = body;

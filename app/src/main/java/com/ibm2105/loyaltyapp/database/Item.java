@@ -10,7 +10,7 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "items")
 public class Item {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @NonNull
     @ColumnInfo(name = "item_id")
     private int itemId;
@@ -19,8 +19,7 @@ public class Item {
     private float price;
     private String image;
 
-    public Item(@NonNull int itemId, String name, float price, String image) {
-        this.itemId = itemId;
+    public Item(String name, float price, String image) {
         this.name = name;
         this.price = price;
         this.image = image;
