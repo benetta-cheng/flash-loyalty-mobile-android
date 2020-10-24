@@ -46,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
         NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration);
 
+        // Set the title for the first time as the title is not set according to the fragment until there is a fragment change/selection
+        getSupportActionBar().setTitle(navController.getCurrentDestination().getLabel());
+
         Button logoutButton = navigationView.getHeaderView(0).findViewById(R.id.buttonLogout);
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
