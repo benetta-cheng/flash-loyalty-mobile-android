@@ -10,4 +10,8 @@
         <item name="colorSecondaryVariant">@color/aqua_700</item>
     </style>
 
+    <style name="CircularImageView">
+        <item name="cornerSize">50%</item>
+    </style>
+
 </resources>

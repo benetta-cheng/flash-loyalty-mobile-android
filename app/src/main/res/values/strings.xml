@@ -22,4 +22,21 @@
     <string name="email_example">E.g. johndoe@gmail.com</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="notification">Notification</string>
+    <string name="required_input">*Required</string>
+    <string name="incorrect_login">Incorrect username or password</string>
+    <string name="login_successful">Login successful</string>
+    <string name="user_id">UserID</string>
+    <string name="input_mismatch">Password do not match</string>
+    <string name="invalid_email">Invalid email</string>
+    <string name="username_exists">Username exists</string>
+    <string name="update_successful">Update Successful</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+    <string name="logout_successful">Logout Successful</string>
+    <string name="forget_password_message">Sent password reset instruction to the email associated with the username.</string>
+    <string name="reset_code">Reset Code</string>
+    <string name="invalid_reset_code">Invalid Reset Code</string>
+    <string name="password_reset_successful">Password Reset Successful</string>
 </resources>

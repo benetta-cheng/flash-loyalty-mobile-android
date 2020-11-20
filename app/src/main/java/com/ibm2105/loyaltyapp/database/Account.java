@@ -25,17 +25,19 @@ public class Account {
     @ColumnInfo(name = "date_of_birth")
     private String dateOfBirth;
 
-    @ColumnInfo(name = "total_points")
+    @ColumnInfo(name = "total_points", defaultValue = "0")
     private int totalPoints;
 
-    public Account(@NonNull String username, String password, String email, String fullName, String dateOfBirth, String state, int totalPoints) {
+    private String image;
+
+    public Account(@NonNull String username, String password, String email, String fullName, String dateOfBirth, String state, String image) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.fullName = fullName;
         this.dateOfBirth = dateOfBirth;
         this.state = state;
-        this.totalPoints = totalPoints;
+        this.image = image;
     }
 
     public int getId() {
@@ -101,5 +103,13 @@ public class Account {
 
     public void setTotalPoints(int totalPoints) {
         this.totalPoints = totalPoints;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

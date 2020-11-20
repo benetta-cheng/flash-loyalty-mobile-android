@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_login_to_signupFragment"
             app:destination="@id/signupFragment" />
+        <action
+            android:id="@+id/action_login_to_resetPasswordFragment"
+            app:destination="@id/resetPasswordFragment" />
     </fragment>
     <activity
         android:id="@+id/mainActivity"
@@ -30,5 +33,14 @@
         <action
             android:id="@+id/action_signupFragment_to_mainActivity"
             app:destination="@id/mainActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/resetPasswordFragment"
+        android:name="com.ibm2105.loyaltyapp.prelogin.ResetPasswordFragment"
+        android:label="fragment_reset_password"
+        tools:layout="@layout/fragment_reset_password" >
+        <argument
+            android:name="username"
+            app:argType="string" />
     </fragment>
 </navigation>

@@ -4,16 +4,23 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.ibm2105.loyaltyapp.database.LoyaltyDatabase;
@@ -49,15 +56,40 @@ public class MainActivity extends AppCompatActivity {
         // Set the title for the first time as the title is not set according to the fragment until there is a fragment change/selection
         getSupportActionBar().setTitle(navController.getCurrentDestination().getLabel());
 
+        MainViewModel viewModel = new ViewModelProvider(this).get(MainViewModel.class);
+
+        viewModel.getAccountLiveData().observe(this, account -> {
+            ImageView profileImageView = findViewById(R.id.imageViewUser);
+            TextView usernameTextView = findViewById(R.id.textViewUsername);
+
+            usernameTextView.setText(account.getUsername());
+            if (account.getImage() != null) {
+                byte[] decodedString = Base64.decode(account.getImage(), Base64.DEFAULT);
+                Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                profileImageView.setImageBitmap(bitmap);
+            }
+        });
+
+        viewModel.getStatus().observe(this, status -> {
+            if (status != null) {
+                if (status.equals(R.string.logout_successful)) {
+                    Toast.makeText(this, status, Toast.LENGTH_SHORT).show();
+                    navHostFragment.getNavController().navigate(R.id.preLoginActivity);
+
+                    // To prevent getting back to the post-login screen from pressing back after logging in
+                    finish();
+                }
+            }
+        });
+
         Button logoutButton = navigationView.getHeaderView(0).findViewById(R.id.buttonLogout);
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                navController.navigate(R.id.preLoginActivity);
-                // To prevent getting back to the pre-login screen from pressing back after logging in
-                finish();
+                viewModel.logout();
             }
         });
+
     }
 
     @Override
