@@ -20,4 +20,7 @@ public interface RewardDao {
 
     @Query("SELECT * FROM  rewards")
     LiveData<List<Reward>> getAllRewards();
+
+    @Query("SELECT * FROM rewards WHERE reward_id = :reward_id")
+    LiveData<Reward> findReward(int reward_id);
 }

@@ -39,4 +39,8 @@
     <string name="reset_code">Reset Code</string>
     <string name="invalid_reset_code">Invalid Reset Code</string>
     <string name="password_reset_successful">Password Reset Successful</string>
+    <string name="reward_successful">Successfully redeemed reward!</string>
+    <string name="code_successful">Code redeemed successful!</string>
+    <string name="code_fail">Invalid code or expired code</string>
+    <string name="reward_fail">Not enought points to redeem reward!</string>
 </resources>
