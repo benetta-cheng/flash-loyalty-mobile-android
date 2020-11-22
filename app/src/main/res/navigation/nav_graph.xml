@@ -69,5 +69,9 @@
         android:id="@+id/fullNewsFragment"
         android:name="com.ibm2105.loyaltyapp.news.FullNewsFragment"
         android:label="@string/news"
-        tools:layout="@layout/fragment_full_news" />
+        tools:layout="@layout/fragment_full_news" >
+        <argument
+            android:name="NewsId"
+            app:argType="integer" />
+    </fragment>
 </navigation>

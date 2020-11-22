@@ -20,4 +20,7 @@ public interface NewsDao {
 
     @Query("SELECT * FROM  news")
     LiveData<List<News>> getAllNews();
+
+    @Query("SELECT * FROM news WHERE news_id = :newsId")
+    LiveData<News> findNewsWithId(int newsId);
 }

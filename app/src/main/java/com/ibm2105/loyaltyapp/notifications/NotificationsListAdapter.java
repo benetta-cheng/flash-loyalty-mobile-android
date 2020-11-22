@@ -10,12 +10,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ibm2105.loyaltyapp.R;
+import com.ibm2105.loyaltyapp.database.Notification;
+
+import java.util.List;
 
 public class NotificationsListAdapter extends RecyclerView.Adapter<NotificationsListAdapter.ViewHolder> {
-    private NotificationsListData[] listdata;
 
-    public NotificationsListAdapter(NotificationsListData[] listdata) {
-        this.listdata = listdata;
+    private List<Notification> notification;
+
+    public NotificationsListAdapter(List<Notification> notification) {
+        this.notification = notification;
     }
 
     /**
@@ -38,9 +42,9 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<Notifications
      */
     @Override
     public void onBindViewHolder(@NonNull NotificationsListAdapter.ViewHolder holder, int position) {
-        holder.textViewNotificationsTitle.setText(listdata[position].getTitle());
-        holder.textViewNotificationsTime.setText(listdata[position].getTime());
-        holder.textViewNotificationsDescription.setText(listdata[position].getDescription());
+        holder.textViewNotificationsTitle.setText(notification.get(position).getTitle());
+        holder.textViewNotificationsTime.setText(notification.get(position).getTime());
+        holder.textViewNotificationsDescription.setText(notification.get(position).getDescription());
     }
 
     /**
@@ -50,7 +54,12 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<Notifications
      */
     @Override
     public int getItemCount() {
-        return listdata.length;
+        return notification.size();
+    }
+
+    public void setNotification(List<Notification> notification) {
+        this.notification = notification;
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

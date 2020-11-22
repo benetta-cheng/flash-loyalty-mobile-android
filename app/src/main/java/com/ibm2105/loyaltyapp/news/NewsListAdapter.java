@@ -1,5 +1,9 @@
 package com.ibm2105.loyaltyapp.news;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Bundle;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +16,16 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ibm2105.loyaltyapp.R;
+import com.ibm2105.loyaltyapp.database.News;
+
+import java.util.List;
 
 public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHolder> {
-    private NewsListData[] listdata;
 
-    public NewsListAdapter(NewsListData[] listdata) {
-        this.listdata = listdata;
+    private List<News> news;
+
+    public NewsListAdapter(List<News> news) {
+        this.news = news;
     }
 
     /**
@@ -39,14 +47,20 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
      * position.
      */
     @Override
-    public void onBindViewHolder(@NonNull NewsListAdapter.ViewHolder holder, int position) {
-        holder.textViewNewsTitle.setText(listdata[position].getTitle());
-        holder.imageViewNewsPicture.setImageResource(listdata[position].getImgId());
-        holder.textViewNewsDescription.setText(listdata[position].getDescription());
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        holder.textViewNewsTitle.setText(news.get(position).getTitle());
+
+        byte[] decodedString = Base64.decode(news.get(position).getImage(), Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        holder.imageViewNewsPicture.setImageBitmap(bitmap);
+
+        holder.textViewNewsDescription.setText(news.get(position).getDescription());
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.fullNewsFragment);
+                Bundle bundle = new Bundle();
+                bundle.putInt("NewsId", news.get(position).getNewsId());
+                Navigation.findNavController(view).navigate(R.id.fullNewsFragment, bundle);
             }
         });
     }
@@ -58,7 +72,12 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
      */
     @Override
     public int getItemCount() {
-        return listdata.length;
+        return news.size();
+    }
+
+    public void setNews(List<News> news) {
+        this.news = news;
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

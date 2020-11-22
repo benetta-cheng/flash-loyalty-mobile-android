@@ -1,19 +1,26 @@
 package com.ibm2105.loyaltyapp.news;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
+import android.preference.PreferenceManager;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ibm2105.loyaltyapp.NewsViewModel;
 import com.ibm2105.loyaltyapp.R;
+import com.ibm2105.loyaltyapp.database.NewsDao;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,6 +28,8 @@ import com.ibm2105.loyaltyapp.R;
  * create an instance of this fragment.
  */
 public class FullNewsFragment extends Fragment {
+
+    private NewsViewModel viewModel;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -56,6 +65,8 @@ public class FullNewsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        viewModel = new ViewModelProvider(this).get(NewsViewModel.class);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -70,15 +81,19 @@ public class FullNewsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         textViewNewsTitle = view.findViewById(R.id.textViewNewsTitle);
-        textViewNewsTitle.setText("Celebrate your birthday with us!");
-
         imageViewNewsPicture = view.findViewById(R.id.imageViewNewsPicture);
-        imageViewNewsPicture.setImageResource(R.drawable.img_brownies);
-
         textViewFullDescription = view.findViewById(R.id.textViewNewsDescription);
-        textViewFullDescription.setText("Come claim a free cuboid brownie if your birthday is on July! \n\nJust present any form of member identification to" +
-                "one of our friendly staff member and they will present you with your free birthday brownie. \n\nYou may select any brownie flavour from our diverse options! \n\n" +
-                "*Offer lasts till the end of your birthday month.");
+
+
+        viewModel.accountWithNewsIdLiveData(getArguments().getInt("NewsId")).observe(getViewLifecycleOwner(), fullNews -> {
+            textViewNewsTitle.setText(fullNews.getTitle());
+
+            byte[] decodedString = Base64.decode(fullNews.getImage(), Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            imageViewNewsPicture.setImageBitmap(bitmap);
+
+            textViewFullDescription.setText(fullNews.getBody());
+        });
     }
 
     @Override

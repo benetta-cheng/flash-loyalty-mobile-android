@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,7 +18,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+import com.ibm2105.loyaltyapp.NotificationViewModel;
 import com.ibm2105.loyaltyapp.R;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,6 +29,8 @@ import com.ibm2105.loyaltyapp.R;
  * create an instance of this fragment.
  */
 public class NotificationsDialogFragment extends AppCompatDialogFragment {
+
+    private NotificationViewModel viewModel;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -60,6 +66,8 @@ public class NotificationsDialogFragment extends AppCompatDialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        viewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -79,14 +87,14 @@ public class NotificationsDialogFragment extends AppCompatDialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         View view = requireActivity().getLayoutInflater().inflate(R.layout.fragment_notifications_dialog, null);
-        NotificationsListData[] notificationsListData = new NotificationsListData[] {
-                new NotificationsListData("Preorder Completed", "Time", "Your preorder code is ######. Please present this ID to the cashier"),
-                new NotificationsListData("Giftcode Claimed", "Time", "Giftcode with ID ######## successfully claimed"),
-                new NotificationsListData("Giftcode Claimed", "Time", "Giftcode with ID ######## successfully claimed"),
-        };
 
         RecyclerView recyclerViewNotifications = (RecyclerView) view.findViewById(R.id.recyclerviewnotifications);
-        NotificationsListAdapter adapter = new NotificationsListAdapter(notificationsListData);
+
+        NotificationsListAdapter adapter = new NotificationsListAdapter(new ArrayList<>());
+        viewModel.getNotificationLiveData().observe(this.getActivity(), notifications -> {
+            adapter.setNotification(notifications);
+        });
+
         recyclerViewNotifications.setHasFixedSize(true);
         recyclerViewNotifications.setLayoutManager(new LinearLayoutManager(view.getContext()));
         recyclerViewNotifications.setAdapter(adapter);

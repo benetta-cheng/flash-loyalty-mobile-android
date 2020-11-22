@@ -5,6 +5,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,7 +15,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.ibm2105.loyaltyapp.NewsViewModel;
 import com.ibm2105.loyaltyapp.R;
+import com.ibm2105.loyaltyapp.database.News;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,6 +28,8 @@ import com.ibm2105.loyaltyapp.R;
  * create an instance of this fragment.
  */
 public class NewsFragment extends Fragment {
+
+    private NewsViewModel viewModel;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -30,6 +39,7 @@ public class NewsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private Object List;
 
     public NewsFragment() {
         // Required empty public constructor
@@ -56,6 +66,8 @@ public class NewsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        viewModel = new ViewModelProvider(this).get(NewsViewModel.class);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -66,14 +78,13 @@ public class NewsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        NewsListData[] newsListData = new NewsListData[] {
-                new NewsListData("Celebrate your birthday with us!", R.drawable.img_brownies, "Come claim a free cuboid brownie"),
-                new NewsListData("Sales for household products!", R.drawable.img_household_items, "Up to 70% discounts for most household goods"),
-                new NewsListData("Stock up on party snacks!", R.drawable.img_pizza, "Hand-tossed pizza"),
-        };
-
         RecyclerView recyclerViewNews = (RecyclerView) view.findViewById(R.id.recyclerviewnews);
-        NewsListAdapter adapter = new NewsListAdapter(newsListData);
+
+        NewsListAdapter adapter = new NewsListAdapter(new ArrayList<>());
+        viewModel.getNewsLiveData().observe(getViewLifecycleOwner(), news -> {
+            adapter.setNews(news);
+        });
+
         recyclerViewNews.setHasFixedSize(true);
         recyclerViewNews.setLayoutManager(new LinearLayoutManager(view.getContext()));
         recyclerViewNews.setAdapter(adapter);
