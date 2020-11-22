@@ -1,5 +1,8 @@
 package com.ibm2105.loyaltyapp;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +13,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class PreOrderConfirmationListAdapter extends RecyclerView.Adapter<PreOrderConfirmationListAdapter.ViewHolder> {
-    private PreOrderListData[] listData;
+import java.util.List;
 
-    public PreOrderConfirmationListAdapter(PreOrderListData[] listData) { this.listData = listData; }
+public class PreOrderConfirmationListAdapter extends RecyclerView.Adapter<PreOrderConfirmationListAdapter.ViewHolder> {
+    //private PreOrderListData[] listData;
+    private List<PreOrderListData> listData;
+
+    //public PreOrderConfirmationListAdapter(PreOrderListData[] listData) { this.listData = listData; }
+    public PreOrderConfirmationListAdapter(List<PreOrderListData> listData) {this.listData=listData;}
 
     @NonNull
     @Override
@@ -26,11 +33,15 @@ public class PreOrderConfirmationListAdapter extends RecyclerView.Adapter<PreOrd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        final PreOrderListData listDataItem = listData[position];
+        final PreOrderListData listDataItem = listData.get(position);
         holder.textViewItemAmount.setText(String.valueOf(listDataItem.getItemQuantity()));
         holder.textViewItemPrice.setText("RM" + listDataItem.getItemPrice());
         holder.textViewItemName.setText(String.valueOf(listDataItem.getItemName()));
-        holder.imageView.setImageResource(listDataItem.getPreOrderImage());
+
+        byte[] decodedString = Base64.decode(listDataItem.getPreOrderImage(), Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        holder.imageView.setImageBitmap(bitmap);
+
         holder.plusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -49,7 +60,11 @@ public class PreOrderConfirmationListAdapter extends RecyclerView.Adapter<PreOrd
 
     @Override
     public int getItemCount() {
-        return listData.length;
+        return listData.size();
+    }
+
+    public void setListData(List<PreOrderListData> listData) {
+        this.listData = listData;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

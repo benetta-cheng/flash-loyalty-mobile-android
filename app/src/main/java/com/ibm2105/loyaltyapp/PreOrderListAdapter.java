@@ -1,5 +1,8 @@
 package com.ibm2105.loyaltyapp;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +15,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class PreOrderListAdapter extends RecyclerView.Adapter<PreOrderListAdapter.ViewHolder> {
-    private PreOrderListData[] listData;
+import java.util.List;
 
-    public PreOrderListAdapter(PreOrderListData[] listData) { this.listData = listData; }
+public class PreOrderListAdapter extends RecyclerView.Adapter<PreOrderListAdapter.ViewHolder> {
+    //
+    private List<PreOrderListData> listData;
+
+    //
+    public PreOrderListAdapter(List<PreOrderListData> listData) { this.listData = listData; }
 
     @NonNull
     @Override
@@ -28,9 +35,13 @@ public class PreOrderListAdapter extends RecyclerView.Adapter<PreOrderListAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        final PreOrderListData listDataItem = listData[position];
+        final PreOrderListData listDataItem = listData.get(position);
         holder.textView.setText(String.valueOf(listDataItem.getItemQuantity()));
-        holder.imageView.setImageResource(listDataItem.getPreOrderImage());
+
+        byte[] decodedString = Base64.decode(listDataItem.getPreOrderImage(), Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        holder.imageView.setImageBitmap(bitmap);
+
         holder.plusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -49,7 +60,11 @@ public class PreOrderListAdapter extends RecyclerView.Adapter<PreOrderListAdapte
 
     @Override
     public int getItemCount() {
-        return listData.length;
+        return listData.size();
+    }
+
+    public void setListData(List<PreOrderListData> listData) {
+        this.listData = listData;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

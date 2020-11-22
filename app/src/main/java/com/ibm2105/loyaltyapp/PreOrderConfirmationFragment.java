@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,8 +23,10 @@ import com.google.android.material.datepicker.DateValidatorPointBackward;
 import com.google.android.material.datepicker.DateValidatorPointForward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputEditText;
+import com.ibm2105.loyaltyapp.database.CartItem;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class PreOrderConfirmationFragment extends Fragment {
@@ -74,19 +77,43 @@ public class PreOrderConfirmationFragment extends Fragment {
             }
         });
 
-        PreOrderListData[] preOrderListDataArray = new PreOrderListData[]{
-                new PreOrderListData(R.color.aqua_700, 0, 10, "ABC"),
-                new PreOrderListData(R.color.aqua_700, 1, 8, "ABE"),
-                new PreOrderListData(R.color.aqua_700, 2, 76, "JSF"),
-                new PreOrderListData(R.color.aqua_700, 3, 12, "ASF")
-        };
+        //PreOrderListData[] preOrderListDataArray = new PreOrderListData[]{};
+        PreOrderViewModel viewModel = new ViewModelProvider(requireActivity()).get(PreOrderViewModel.class);
 
         RecyclerView preOrderRecycler = view.findViewById(R.id.preOrderRecycler);
-        PreOrderConfirmationListAdapter preOrderConfirmationListAdapter = new PreOrderConfirmationListAdapter(preOrderListDataArray);
+        PreOrderConfirmationListAdapter preOrderConfirmationListAdapter = new PreOrderConfirmationListAdapter(new ArrayList<PreOrderListData>());
         preOrderRecycler.setHasFixedSize(true);
         preOrderRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         preOrderRecycler.setAdapter(preOrderConfirmationListAdapter);
 
+        viewModel.getItems().observe(getViewLifecycleOwner(), items -> {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            viewModel.initCartItems(items, dateFormat.format(MaterialDatePicker.todayInUtcMilliseconds()));
+        });
+
+        viewModel.getCart().observe(getViewLifecycleOwner(), cart -> {
+            System.out.println("Fragment Test");
+            if (cart != null) {
+                System.out.println("Got the cart");
+                viewModel.getCartItems(cart.getId()).observe(getViewLifecycleOwner(), cartItems -> {
+                    System.out.println("Got the cart items " + cartItems.size());
+                    viewModel.makeConfirmationPreOrderListData(cartItems);
+                });
+            }
+        });
+
+        viewModel.getConfirmationItems().observe(getViewLifecycleOwner(), items -> {
+            preOrderConfirmationListAdapter.setListData(items);
+            preOrderConfirmationListAdapter.notifyDataSetChanged();
+        });
+
+        Button checkoutButton = view.findViewById(R.id.buttonPreOrderBack);
+        checkoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(R.id.nav_pre_order);
+            }
+        });
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,6 +15,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import com.google.android.material.datepicker.MaterialDatePicker;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 public class PreOrderFragment extends Fragment {
 
@@ -44,17 +50,19 @@ public class PreOrderFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        PreOrderListData[] preOrderListDataArray = new PreOrderListData[]{
-                new PreOrderListData(R.color.aqua_700, 0, 10, "ABC"),
-                new PreOrderListData(R.color.aqua_700, 1, 8, "ABE"),
-                new PreOrderListData(R.color.aqua_700, 2, 76, "JSF"),
-                new PreOrderListData(R.color.aqua_700, 3, 12, "ASF")
-        };
+
+        PreOrderViewModel viewModel = new ViewModelProvider(requireActivity()).get(PreOrderViewModel.class);
+
         RecyclerView preOrderRecycler = view.findViewById(R.id.preOrderRecycler);
-        PreOrderListAdapter preOrderListAdapter = new PreOrderListAdapter(preOrderListDataArray);
+        PreOrderListAdapter preOrderListAdapter = new PreOrderListAdapter(new ArrayList<PreOrderListData>());
         preOrderRecycler.setHasFixedSize(true);
         preOrderRecycler.setLayoutManager(new GridLayoutManager(requireContext(),2));
         preOrderRecycler.setAdapter(preOrderListAdapter);
+
+        viewModel.getItems().observe(getViewLifecycleOwner(), items -> {
+            preOrderListAdapter.setListData(items);
+            preOrderListAdapter.notifyDataSetChanged();
+        });
 
         Button checkoutButton = view.findViewById(R.id.buttonCheckout);
         checkoutButton.setOnClickListener(new View.OnClickListener() {
