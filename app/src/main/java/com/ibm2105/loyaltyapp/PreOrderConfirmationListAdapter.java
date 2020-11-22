@@ -16,11 +16,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class PreOrderConfirmationListAdapter extends RecyclerView.Adapter<PreOrderConfirmationListAdapter.ViewHolder> {
-    //private PreOrderListData[] listData;
     private List<PreOrderListData> listData;
+    private PreOrderViewModel viewModel;
 
-    //public PreOrderConfirmationListAdapter(PreOrderListData[] listData) { this.listData = listData; }
-    public PreOrderConfirmationListAdapter(List<PreOrderListData> listData) {this.listData=listData;}
+    public PreOrderConfirmationListAdapter(List<PreOrderListData> listData, PreOrderViewModel viewModel) {
+        this.listData = listData;
+        this.viewModel = viewModel;
+    }
 
     @NonNull
     @Override
@@ -35,7 +37,7 @@ public class PreOrderConfirmationListAdapter extends RecyclerView.Adapter<PreOrd
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final PreOrderListData listDataItem = listData.get(position);
         holder.textViewItemAmount.setText(String.valueOf(listDataItem.getItemQuantity()));
-        holder.textViewItemPrice.setText("RM" + listDataItem.getItemPrice());
+        holder.textViewItemPrice.setText("RM" + String.format("%.2f", listDataItem.getItemPrice()));
         holder.textViewItemName.setText(String.valueOf(listDataItem.getItemName()));
 
         byte[] decodedString = Base64.decode(listDataItem.getPreOrderImage(), Base64.DEFAULT);
@@ -45,15 +47,19 @@ public class PreOrderConfirmationListAdapter extends RecyclerView.Adapter<PreOrd
         holder.plusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listDataItem.setItemQuantity(listDataItem.getItemQuantity()+1);
+                listDataItem.setItemQuantity(listDataItem.getItemQuantity() + 1);
+                viewModel.incrementItemQuantity(listDataItem.getId(), listData);
                 holder.textViewItemAmount.setText(String.valueOf(listDataItem.getItemQuantity()));
             }
         });
         holder.minusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listDataItem.setItemQuantity(listDataItem.getItemQuantity()-1);
-                holder.textViewItemAmount.setText(String.valueOf(listDataItem.getItemQuantity()));
+                if (listDataItem.getItemQuantity() > 1) {
+                    listDataItem.setItemQuantity(listDataItem.getItemQuantity() - 1);
+                    viewModel.decrementItemQuantity(listDataItem.getId(), listData);
+                    holder.textViewItemAmount.setText(String.valueOf(listDataItem.getItemQuantity()));
+                }
             }
         });
     }
@@ -67,7 +73,7 @@ public class PreOrderConfirmationListAdapter extends RecyclerView.Adapter<PreOrd
         this.listData = listData;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView imageView;
         public TextView textViewItemName;
         public TextView textViewItemPrice;
@@ -80,7 +86,7 @@ public class PreOrderConfirmationListAdapter extends RecyclerView.Adapter<PreOrd
             this.imageView = itemView.findViewById(R.id.confirmationImageView);
             this.textViewItemName = itemView.findViewById(R.id.textViewItemName);
             this.textViewItemPrice = itemView.findViewById(R.id.textViewItemPrice);
-            this.textViewItemAmount= itemView.findViewById(R.id.textViewItemAmount);
+            this.textViewItemAmount = itemView.findViewById(R.id.textViewItemAmount);
             this.plusButton = itemView.findViewById(R.id.floatingActionButton);
             this.minusButton = itemView.findViewById(R.id.floatingActionButton2);
         }

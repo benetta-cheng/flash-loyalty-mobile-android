@@ -2,6 +2,7 @@ package com.ibm2105.loyaltyapp.database;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -15,6 +16,9 @@ public interface CartDao {
 
     @Update
     public void updateCart(Cart cart);
+
+    @Delete
+    public void delete(Cart cart);
 
     @Query("SELECT * FROM carts WHERE user_id = :userId")
     LiveData<Cart> getCartForUser(int userId);

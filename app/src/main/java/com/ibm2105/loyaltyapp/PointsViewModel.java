@@ -54,6 +54,9 @@ public class PointsViewModel extends AndroidViewModel {
                             account.setTotalPoints(account.getTotalPoints()+code.getPointsValue());
                             LoyaltyDatabase.databaseWriteExecutor.execute(() -> {
                                 LoyaltyDatabase.getDatabase(getApplication()).accountDao().updateAccount(account);
+                                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                String formattedDate = df.format(Calendar.getInstance().getTime());
+                                LoyaltyDatabase.getDatabase(getApplication()).notificationDao().insert(new Notification(account.getId(),"Redeemed a code!", "You have redeemed a code worth " + code.getPointsValue() + " points!", formattedDate));
                                 Handler handler = new Handler(Looper.getMainLooper());
                                 handler.post(() -> {
                                     status.setValue(R.string.code_successful);

@@ -22,6 +22,9 @@ public interface CartItemDao {
     @Delete
     public void deleteCartItem(CartItem cartItem);
 
+    @Query("DELETE FROM cart_items WHERE cart_id = :cartId")
+    public void deleteAllFromCart(int cartId);
+
     @Query("SELECT * FROM cart_items WHERE cart_id = :cartId")
     LiveData<List<CartItem>> getAllCartItemForCart(int cartId);
 

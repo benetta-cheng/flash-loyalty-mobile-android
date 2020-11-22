@@ -1,10 +1,16 @@
 package com.ibm2105.loyaltyapp;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -14,9 +20,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointBackward;
@@ -25,9 +34,13 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputEditText;
 import com.ibm2105.loyaltyapp.database.CartItem;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class PreOrderConfirmationFragment extends Fragment {
 
@@ -46,30 +59,55 @@ public class PreOrderConfirmationFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        String[] BRANCHES = new String[]{"Branch1", "Branch2", "Branch3"};
+        PreOrderViewModel viewModel = new ViewModelProvider(requireActivity()).get(PreOrderViewModel.class);
 
-        ArrayAdapter<String> stateAdapter = new ArrayAdapter<>(getContext(), R.layout.dropdown_menu_item, BRANCHES);
-        AutoCompleteTextView stateInput = view.findViewById(R.id.autoCompleteTextInputBranch);
-        stateInput.setAdapter(stateAdapter);
+        String[] BRANCHES = new String[]{"Shah Alam", "Subang Jaya", "Kuala Lumpur"};
+
+        ArrayAdapter<String> branchAdapter = new ArrayAdapter<>(getContext(), R.layout.dropdown_menu_item, BRANCHES);
+        AutoCompleteTextView branchInput = view.findViewById(R.id.autoCompleteTextInputBranch);
+        branchInput.setAdapter(branchAdapter);
+
+        branchInput.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                viewModel.updateBranch((String) adapterView.getItemAtPosition(i));
+            }
+        });
 
         TextInputEditText textInputEditTextPreOrderDate = view.findViewById(R.id.textInputEditTextPreOrderDate);
         textInputEditTextPreOrderDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 MaterialDatePicker.Builder<Long> materialDatePickerBuilder = MaterialDatePicker.Builder.datePicker();
-                materialDatePickerBuilder.setSelection(MaterialDatePicker.todayInUtcMilliseconds());
+                CalendarConstraints.Builder calendarConstraints = new CalendarConstraints.Builder();
+                String preOrderDate = textInputEditTextPreOrderDate.toString();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+                if (preOrderDate.isEmpty()) {
+                    materialDatePickerBuilder.setSelection(MaterialDatePicker.todayInUtcMilliseconds());
+                    calendarConstraints.setOpenAt(MaterialDatePicker.todayInUtcMilliseconds());
+                } else {
+                    try {
+                        long date = dateFormat.parse(preOrderDate).getTime();
+                        materialDatePickerBuilder.setSelection(date);
+                        calendarConstraints.setOpenAt(date);
+                    } catch (ParseException exception) {
+                        materialDatePickerBuilder.setSelection(MaterialDatePicker.todayInUtcMilliseconds());
+                    }
+                }
+
                 materialDatePickerBuilder.setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR);
 
-                CalendarConstraints.Builder calendarConstraints = new CalendarConstraints.Builder();
-                calendarConstraints.setOpenAt(MaterialDatePicker.todayInUtcMilliseconds());
+                calendarConstraints.setStart(MaterialDatePicker.todayInUtcMilliseconds());
                 calendarConstraints.setValidator(DateValidatorPointForward.now());
 
                 materialDatePickerBuilder.setCalendarConstraints(calendarConstraints.build());
                 MaterialDatePicker<Long> materialDatePicker = materialDatePickerBuilder.build();
                 materialDatePicker.addOnPositiveButtonClickListener(selection -> {
                     Date date = new Date(selection);
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                    textInputEditTextPreOrderDate.setText(dateFormat.format(date));
+                    String formattedDate = dateFormat.format(date);
+                    viewModel.updateCollectionDate(formattedDate);
+                    textInputEditTextPreOrderDate.setText(formattedDate);
                 });
 
                 materialDatePicker.show(getChildFragmentManager(), materialDatePicker.toString());
@@ -77,40 +115,90 @@ public class PreOrderConfirmationFragment extends Fragment {
             }
         });
 
-        //PreOrderListData[] preOrderListDataArray = new PreOrderListData[]{};
-        PreOrderViewModel viewModel = new ViewModelProvider(requireActivity()).get(PreOrderViewModel.class);
-
         RecyclerView preOrderRecycler = view.findViewById(R.id.preOrderRecycler);
-        PreOrderConfirmationListAdapter preOrderConfirmationListAdapter = new PreOrderConfirmationListAdapter(new ArrayList<PreOrderListData>());
+        PreOrderConfirmationListAdapter preOrderConfirmationListAdapter = new PreOrderConfirmationListAdapter(new ArrayList<PreOrderListData>(), viewModel);
         preOrderRecycler.setHasFixedSize(true);
         preOrderRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         preOrderRecycler.setAdapter(preOrderConfirmationListAdapter);
 
-        viewModel.getItems().observe(getViewLifecycleOwner(), items -> {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-            viewModel.initCartItems(items, dateFormat.format(MaterialDatePicker.todayInUtcMilliseconds()));
-        });
-
         viewModel.getCart().observe(getViewLifecycleOwner(), cart -> {
-            System.out.println("Fragment Test");
             if (cart != null) {
-                System.out.println("Got the cart");
+                viewModel.initCartItems(cart);
                 viewModel.getCartItems(cart.getId()).observe(getViewLifecycleOwner(), cartItems -> {
-                    System.out.println("Got the cart items " + cartItems.size());
                     viewModel.makeConfirmationPreOrderListData(cartItems);
                 });
+
+                if (cart.getLocation() != null) {
+                    branchInput.setText(cart.getLocation(), false);
+                } else {
+                    branchInput.setText(BRANCHES[0], false);
+                    viewModel.updateBranch(BRANCHES[0]);
+                }
+
+                if (cart.getCollectionDate() != null) {
+                    textInputEditTextPreOrderDate.setText(cart.getCollectionDate());
+                }
+            } else {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                viewModel.createCart(dateFormat.format(MaterialDatePicker.todayInUtcMilliseconds()));
             }
         });
 
-        viewModel.getConfirmationItems().observe(getViewLifecycleOwner(), items -> {
-            preOrderConfirmationListAdapter.setListData(items);
-            preOrderConfirmationListAdapter.notifyDataSetChanged();
+        LiveData<List<PreOrderListData>> confirmationItemsLiveData = viewModel.getConfirmationItems();
+        confirmationItemsLiveData.observe(getViewLifecycleOwner(), new Observer<List<PreOrderListData>>() {
+            @Override
+            public void onChanged(List<PreOrderListData> items) {
+                preOrderConfirmationListAdapter.setListData(items);
+                preOrderConfirmationListAdapter.notifyDataSetChanged();
+            }
         });
 
-        Button checkoutButton = view.findViewById(R.id.buttonPreOrderBack);
-        checkoutButton.setOnClickListener(new View.OnClickListener() {
+        TextView totalPriceTextView = view.findViewById(R.id.textViewOrderPrice);
+        viewModel.getTotalPrice().observe(getViewLifecycleOwner(), totalPrice -> {
+            totalPriceTextView.setText(String.format("%.2f", totalPrice));
+        });
+
+        Button backButton = view.findViewById(R.id.buttonPreOrderBack);
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Navigation.findNavController(view).navigate(R.id.nav_pre_order);
+            }
+        });
+
+        Button confirmButton = view.findViewById(R.id.buttonPreOrderConfirm);
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewModel.completePreOrder();
+                Toast.makeText(getContext(), "Preorder Completed", Toast.LENGTH_SHORT).show();
+                NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(NOTIFICATION_SERVICE);
+                String id = "Channel 1";
+                String description = "Preorders";
+                int importance=NotificationManager.IMPORTANCE_LOW;
+
+                if (Build.VERSION.SDK_INT >= 26){
+                    NotificationChannel channel = new NotificationChannel(id, description,importance);
+                    notificationManager.createNotificationChannel(channel);
+
+                    Notification notification = new Notification.Builder(getContext(),id)
+                            .setCategory(Notification.CATEGORY_MESSAGE)
+                            .setSmallIcon(R.drawable.ic_logo)
+                            .setContentTitle("Preorder Complete")
+                            .setContentText("You have successfully placed a preorder.")
+                            .setAutoCancel(true)
+                            .build();
+                    notificationManager.notify(1,notification);
+                }
+                else {
+                    Notification notification = new Notification.Builder(getContext())
+                            .setSmallIcon(R.drawable.ic_logo)
+                            .setContentTitle("Preorder Complete")
+                            .setContentText("You have successfully placed a preorder.")
+                            .setAutoCancel(true)
+                            .build();
+                    notificationManager.notify(1, notification);
+                }
                 Navigation.findNavController(view).navigate(R.id.nav_pre_order);
             }
         });

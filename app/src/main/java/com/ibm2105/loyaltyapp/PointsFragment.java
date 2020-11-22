@@ -70,13 +70,12 @@ public class PointsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         pointsViewModel.getStatus().observe(getViewLifecycleOwner(), status -> {
-            System.out.println(status);
             if (status != null) {
                 if (status.equals(R.string.reward_successful)) {
                     Toast.makeText(getContext(), status, Toast.LENGTH_SHORT).show();
                     NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(NOTIFICATION_SERVICE);
-                    String id = "channel 1";
-                    String description = "143";
+                    String id = "Channel 1";
+                    String description = "Rewards";
                     int importance=NotificationManager.IMPORTANCE_LOW;
 
                     if (Build.VERSION.SDK_INT >= 26){
@@ -107,6 +106,33 @@ public class PointsFragment extends Fragment {
                 }
                 else if (status.equals(R.string.code_successful)) {
                     Toast.makeText(getContext(), status, Toast.LENGTH_SHORT).show();
+                    NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(NOTIFICATION_SERVICE);
+                    String id = "Channel 1";
+                    String description = "Code";
+                    int importance=NotificationManager.IMPORTANCE_LOW;
+
+                    if (Build.VERSION.SDK_INT >= 26){
+                        NotificationChannel channel = new NotificationChannel(id, description,importance);
+                        notificationManager.createNotificationChannel(channel);
+
+                        Notification notification = new Notification.Builder(getContext(),id)
+                                .setCategory(Notification.CATEGORY_MESSAGE)
+                                .setSmallIcon(R.drawable.ic_logo)
+                                .setContentTitle("Code redeemed!")
+                                .setContentText("You have successfully redeemed a code!")
+                                .setAutoCancel(true)
+                                .build();
+                        notificationManager.notify(1,notification);
+                    }
+                    else {
+                        Notification notification = new Notification.Builder(getContext())
+                                .setSmallIcon(R.drawable.ic_logo)
+                                .setContentTitle("Code redeemed!")
+                                .setContentText("You have successfully redeemed a code!")
+                                .setAutoCancel(true)
+                                .build();
+                        notificationManager.notify(1, notification);
+                    }
                 }
                 else if (status.equals(R.string.code_fail)) {
                     Toast.makeText(getContext(), status, Toast.LENGTH_SHORT).show();

@@ -9,14 +9,13 @@ import androidx.room.RoomDatabase;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {Account.class, Notification.class, Cart.class, CartItem.class, History.class, Code.class, Item.class, News.class, Reward.class}, version = 1, exportSchema = false)
+@Database(entities = {Account.class, Notification.class, Cart.class, CartItem.class, Code.class, Item.class, News.class, Reward.class}, version = 1, exportSchema = false)
 public abstract class LoyaltyDatabase extends RoomDatabase {
 
     public abstract AccountDao accountDao();
     public abstract NotificationDao notificationDao();
     public abstract CartDao cartDao();
     public abstract CartItemDao cartItemDao();
-    public abstract HistoryDao historyDao();
     public abstract CodeDao codeDao();
     public abstract ItemDao itemDao();
     public abstract NewsDao newsDao();
