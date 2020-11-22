@@ -42,5 +42,5 @@
     <string name="reward_successful">Successfully redeemed reward!</string>
     <string name="code_successful">Code redeemed successful!</string>
     <string name="code_fail">Invalid code or expired code</string>
-    <string name="reward_fail">Not enought points to redeem reward!</string>
+    <string name="reward_fail">Not enough points to redeem reward!</string>
 </resources>
