@@ -241,7 +241,6 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        System.out.println("Test");
 
         if (requestCode == 1001 && resultCode == Activity.RESULT_OK) {
             if (data != null) {
