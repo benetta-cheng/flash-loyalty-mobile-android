@@ -165,7 +165,6 @@ public class PreOrderViewModel extends AndroidViewModel {
                     }
 
                     if (preOrderListData.getItemQuantity() > 0 && !contains) {
-                        System.out.println(preOrderListData.getItemName());
                         CartItem newCartItem = new CartItem(cart.getId(), preOrderListData.getId(), preOrderListData.getItemQuantity());
                         LoyaltyDatabase.databaseWriteExecutor.execute(() -> {
                             cartItemDao.insert(newCartItem);

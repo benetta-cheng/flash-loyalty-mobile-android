@@ -67,6 +67,11 @@ public class ProfileViewModel extends AndroidViewModel {
         }
     }
 
+    public void updateImage(String image) {
+        account.setImage(image);
+        ProfileViewModel.this.update(account);
+    }
+
     private void update(Account account) {
         LoyaltyDatabase.databaseWriteExecutor.execute(() -> {
             LoyaltyDatabase.getDatabase(getApplication()).accountDao().updateAccount(account);
